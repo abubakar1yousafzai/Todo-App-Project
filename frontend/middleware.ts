@@ -28,9 +28,9 @@ export default async function middleware(request: NextRequest) {
   if (isRootRoute) {
     if (hasSession) {
       return NextResponse.redirect(new URL("/dashboard", request.url));
-    } else {
-      return NextResponse.redirect(new URL("/login", request.url));
     }
+    // Allow unauthenticated users to stay on '/' so LandingPage renders
+    return NextResponse.next();
   }
 
   // 2. Handle Protected Routes (/dashboard/*)

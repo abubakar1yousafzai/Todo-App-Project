@@ -2,11 +2,6 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { TaskCard } from "./TaskCard";
 import { Task } from "@/types";
-import { useTasks } from "@/hooks/useTasks";
-
-vi.mock("@/hooks/useTasks", () => ({
-  useTasks: vi.fn(),
-}));
 
 describe("TaskCard Component", () => {
   const mockTask: Task = {
@@ -24,16 +19,8 @@ describe("TaskCard Component", () => {
 
   const mockOnEdit = vi.fn();
   const mockOnDelete = vi.fn();
-  const mockToggleComplete = vi.fn();
-  const mockTogglePin = vi.fn();
-
-  beforeEach(() => {
-    vi.clearAllMocks();
-    (useTasks as any).mockReturnValue({
-      toggleComplete: mockToggleComplete,
-      togglePin: mockTogglePin,
-    });
-  });
+  const mockOnToggle = vi.fn();
+  const mockOnTogglePin = vi.fn();
 
   it("should render task title", () => {
     render(
@@ -41,6 +28,8 @@ describe("TaskCard Component", () => {
         task={mockTask}
         onEdit={mockOnEdit}
         onDelete={mockOnDelete}
+        onToggle={mockOnToggle}
+        onTogglePin={mockOnTogglePin}
       />
     );
     expect(screen.getByText("Test Task")).toBeDefined();
@@ -52,6 +41,8 @@ describe("TaskCard Component", () => {
         task={mockTask}
         onEdit={mockOnEdit}
         onDelete={mockOnDelete}
+        onToggle={mockOnToggle}
+        onTogglePin={mockOnTogglePin}
       />
     );
     expect(screen.getByTestId("task-toggle")).toBeDefined();
@@ -64,23 +55,27 @@ describe("TaskCard Component", () => {
         task={completedTask}
         onEdit={mockOnEdit}
         onDelete={mockOnDelete}
+        onToggle={mockOnToggle}
+        onTogglePin={mockOnTogglePin}
       />
     );
     const title = screen.getByText("Test Task");
     expect(title.className).toContain("line-through");
   });
 
-  it("should call toggleComplete with task id when custom checkbox clicked", () => {
+  it("should call onToggle with task id when custom checkbox clicked", () => {
     render(
       <TaskCard
         task={mockTask}
         onEdit={mockOnEdit}
         onDelete={mockOnDelete}
+        onToggle={mockOnToggle}
+        onTogglePin={mockOnTogglePin}
       />
     );
     const toggleBtn = screen.getByTestId("task-toggle");
     fireEvent.click(toggleBtn);
-    expect(mockToggleComplete).toHaveBeenCalledWith(1);
+    expect(mockOnToggle).toHaveBeenCalledWith(1);
   });
 
   it("should call onEdit with task when title area clicked", () => {
@@ -89,6 +84,8 @@ describe("TaskCard Component", () => {
         task={mockTask}
         onEdit={mockOnEdit}
         onDelete={mockOnDelete}
+        onToggle={mockOnToggle}
+        onTogglePin={mockOnTogglePin}
       />
     );
     fireEvent.click(screen.getByRole("button", { name: /task: test task/i }));
@@ -101,6 +98,8 @@ describe("TaskCard Component", () => {
         task={mockTask}
         onEdit={mockOnEdit}
         onDelete={mockOnDelete}
+        onToggle={mockOnToggle}
+        onTogglePin={mockOnTogglePin}
       />
     );
     fireEvent.click(screen.getByTestId("task-delete"));

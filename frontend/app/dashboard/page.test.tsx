@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import DashboardPage from "./page";
 import { useAuth } from "@/hooks/useAuth";
 import { useTasks } from "@/hooks/useTasks";
@@ -28,16 +28,8 @@ vi.mock("@/components/tasks/SearchBar", () => ({
   SearchBar: () => <div data-testid="search-bar">SearchBar</div>,
 }));
 
-vi.mock("@/components/tasks/FilterTabs", () => ({
-  FilterTabs: () => <div data-testid="filter-tabs">FilterTabs</div>,
-}));
-
 vi.mock("@/components/tasks/AddTaskInput", () => ({
-  AddTaskInput: ({ onAdd }: any) => (
-    <button data-testid="add-task-input" onClick={() => onAdd({ title: "New" })}>
-      Add Task Mock
-    </button>
-  ),
+  AddTaskInput: () => <div data-testid="add-task-input">AddTaskInput</div>,
 }));
 
 vi.mock("@/components/auth/ProtectedRoute", () => ({
@@ -55,6 +47,9 @@ describe("Dashboard Page", () => {
       addTask: vi.fn(),
       updateTask: vi.fn(),
       deleteTask: vi.fn(),
+      toggleComplete: vi.fn(),
+      togglePin: vi.fn(),
+      refreshTasks: vi.fn(),
       searchQuery: "",
       setSearchQuery: vi.fn(),
       activeFilter: "All",
@@ -72,11 +67,10 @@ describe("Dashboard Page", () => {
     expect(screen.getByTestId("task-list")).toBeDefined();
   });
 
-  it("should render StatsCards, SearchBar, and FilterTabs", () => {
+  it("should render StatsCards and SearchBar", () => {
     render(<DashboardPage />);
     expect(screen.getByTestId("stats-cards")).toBeDefined();
     expect(screen.getByTestId("search-bar")).toBeDefined();
-    expect(screen.getByTestId("filter-tabs")).toBeDefined();
   });
 
   it("should render AddTaskInput", () => {

@@ -35,7 +35,6 @@ export const useTasks = () => {
       if (response.error) {
         setError(response.error);
       } else {
-        // Handle both formats: direct array [] or object { items: [], count: 0 }
         const data = response.data as any;
         if (Array.isArray(data)) {
           setTasks(data);
@@ -56,7 +55,6 @@ export const useTasks = () => {
     fetchTasks();
   }, [fetchTasks]);
 
-  // Clean up timeout on unmount
   useEffect(() => {
     return () => {
       if (deleteTimeoutRef.current) {
@@ -73,16 +71,13 @@ export const useTasks = () => {
           activeFilter === "All" ||
           (activeFilter === "Completed" && task.completed) ||
           (activeFilter === "Pending" && !task.completed) ||
-          (activeFilter === "High Priority" && task.priority === "high");
+          (activeFilter === "High Priority" && task.priority === "high" && !task.completed);
         
         return matchesSearch && matchesFilter;
       })
       .sort((a, b) => {
-        // Pinned tasks always on top
         if (a.is_pinned && !b.is_pinned) return -1;
         if (!a.is_pinned && b.is_pinned) return 1;
-        
-        // Secondary sort: created_at desc
         return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
       });
   }, [tasks, searchQuery, activeFilter]);
@@ -93,9 +88,7 @@ export const useTasks = () => {
     const response = await createTask(user.id, data);
     
     if (response.data && !response.error) {
-      // Extract task from response
       const savedTask = (response.data as any)?.item ?? response.data;
-      // Add new task directly to state for immediate UI update
       setTasks(prev => [savedTask, ...prev]);
       return { data: savedTask };
     }
@@ -109,15 +102,11 @@ export const useTasks = () => {
   const updateTask = async (taskId: number, data: TaskFormData): Promise<ApiResponse<Task>> => {
     if (!user?.id) return { error: "User not authenticated" };
 
-    // Optimistic Update
     const previousTasks = [...tasks];
     setTasks(prev => prev.map(t => 
       t.id === taskId ? { 
         ...t, 
         ...data, 
-        due_date: data.due_date !== undefined ? data.due_date : t.due_date,
-        priority: data.priority !== undefined ? data.priority : t.priority,
-        is_pinned: data.is_pinned !== undefined ? data.is_pinned : t.is_pinned,
         updated_at: new Date().toISOString() 
       } : t
     ));
@@ -126,7 +115,7 @@ export const useTasks = () => {
     
     if (response.error) {
       setError(response.error);
-      setTasks(previousTasks); // Rollback
+      setTasks(previousTasks);
       return response;
     }
 
@@ -138,25 +127,19 @@ export const useTasks = () => {
   const deleteTask = async (taskId: number): Promise<ApiResponse<void>> => {
     if (!user?.id) return { error: "User not authenticated" };
 
-    // If there's already a pending delete, execute it immediately
     if (pendingDeleteIdRef.current && deleteTimeoutRef.current) {
       clearTimeout(deleteTimeoutRef.current);
-      const idToDelete = pendingDeleteIdRef.current;
-      // Execute the previous pending delete (fire and forget)
-      apiDeleteTask(user.id, idToDelete);
+      apiDeleteTask(user.id, pendingDeleteIdRef.current);
     }
 
-    // Save current tasks for restore
     const tasksBackup = [...tasks];
     const taskToDelete = tasks.find(t => t.id === taskId);
 
     if (!taskToDelete) return { error: "Task not found" };
 
-    // Optimistic Delete
     setTasks(prev => prev.filter(t => t.id !== taskId));
     pendingDeleteIdRef.current = taskId;
 
-    // Undo handler
     const handleUndo = () => {
       if (deleteTimeoutRef.current) {
         clearTimeout(deleteTimeoutRef.current);
@@ -164,21 +147,14 @@ export const useTasks = () => {
       }
       pendingDeleteIdRef.current = null;
       setTasks(tasksBackup);
-      toast.dismiss();
+      toast.dismiss("undo-delete-toast");
     };
 
-    // Show undo toast
     toast.custom(() => <UndoToast onUndo={handleUndo} />, {
       duration: 5000,
-      onAutoClose: () => {
-        // This runs when the toast automatically closes (timeout finished)
-        // However, onAutoClose might not be reliable for side effects in strict mode or different sonner versions
-        // So we use setTimeout for the actual API call logic
-      },
-      id: "undo-delete-toast" // Ensure only one toast exists
+      id: "undo-delete-toast"
     });
 
-    // Set timeout for permanent deletion
     deleteTimeoutRef.current = setTimeout(async () => {
       if (pendingDeleteIdRef.current === taskId) {
         await apiDeleteTask(user.id, taskId);
@@ -193,7 +169,6 @@ export const useTasks = () => {
   const toggleComplete = async (taskId: number): Promise<ApiResponse<Task>> => {
     if (!user?.id) return { error: "User not authenticated" };
 
-    // Optimistic Update
     const previousTasks = [...tasks];
     setTasks(prev => prev.map(t => 
       t.id === taskId ? { ...t, completed: !t.completed, updated_at: new Date().toISOString() } : t
@@ -203,7 +178,7 @@ export const useTasks = () => {
     
     if (response.error) {
       setError(response.error);
-      setTasks(previousTasks); // Rollback
+      setTasks(previousTasks);
       return response;
     }
 
@@ -215,7 +190,6 @@ export const useTasks = () => {
   const togglePin = async (taskId: number): Promise<ApiResponse<Task>> => {
     if (!user?.id) return { error: "User not authenticated" };
 
-    // Optimistic Update
     const previousTasks = [...tasks];
     setTasks(prev => prev.map(t => 
       t.id === taskId ? { ...t, is_pinned: !t.is_pinned, updated_at: new Date().toISOString() } : t
@@ -225,7 +199,7 @@ export const useTasks = () => {
     
     if (response.error) {
       setError(response.error);
-      setTasks(previousTasks); // Rollback
+      setTasks(previousTasks);
       return response;
     }
 
