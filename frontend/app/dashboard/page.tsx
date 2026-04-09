@@ -8,10 +8,9 @@ import { TaskModal } from "@/components/tasks/TaskModal";
 import { DeleteConfirmDialog } from "@/components/tasks/DeleteConfirmDialog";
 import { StatsCards } from "@/components/tasks/StatsCards";
 import { SearchBar } from "@/components/tasks/SearchBar";
-import { FilterTabs } from "@/components/tasks/FilterTabs";
 import { AddTaskInput } from "@/components/tasks/AddTaskInput";
 import { Button } from "@/components/ui/button";
-import { Plus, RefreshCcw } from "lucide-react";
+import { RefreshCcw } from "lucide-react";
 import { useTasks } from "@/hooks/useTasks";
 import { Task } from "@/types";
 import { toast } from "sonner";
@@ -30,6 +29,7 @@ export default function DashboardPage() {
     updateTask, 
     deleteTask, 
     toggleComplete,
+    togglePin,
     refreshTasks 
   } = useTasks();
   
@@ -69,8 +69,6 @@ export default function DashboardPage() {
       response = await addTask(data);
       if (response?.error) {
         toast.error("Something went wrong");
-      } else {
-        toast.success("Task added successfully");
       }
     }
   };
@@ -88,42 +86,44 @@ export default function DashboardPage() {
         <Navbar />
         <main className="max-w-5xl mx-auto px-4 sm:px-6 py-8 pb-24">
           
-          <div className="flex items-center justify-between mb-8">
-            <h2 className="text-2xl font-bold text-slate-800 tracking-tight">Dashboard</h2>
-            <div className="flex items-center gap-3">
-              <Button 
-                variant="ghost" 
-                size="icon" 
-                onClick={refreshTasks} 
-                disabled={loading}
-                className="rounded-xl text-slate-400 hover:text-primary hover:bg-orange-50"
-                title="Refresh tasks"
-              >
-                <RefreshCcw className={`h-5 w-5 ${loading ? 'animate-spin' : ''}`} />
-              </Button>
-            </div>
+          <div className="flex items-center justify-between mb-2">
+            <h2 className="text-2xl font-black text-slate-800 tracking-tight">Dashboard</h2>
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              onClick={refreshTasks} 
+              disabled={loading}
+              className="rounded-xl text-slate-400 hover:text-primary hover:bg-orange-50"
+              title="Refresh tasks"
+            >
+              <RefreshCcw className={`h-5 w-5 ${loading ? 'animate-spin' : ''}`} />
+            </Button>
           </div>
 
-          <StatsCards tasks={tasks} />
+          <div className="mb-8">
+            <SearchBar value={searchQuery} onChange={setSearchQuery} />
+          </div>
 
-          <div className="mt-10 mb-6">
+          <StatsCards 
+            tasks={tasks} 
+            activeFilter={activeFilter} 
+            onFilterChange={setActiveFilter} 
+          />
+
+          <div className="mt-4 mb-8">
             <AddTaskInput onAdd={addTask} />
-            <div className="flex flex-col gap-2">
-              <SearchBar value={searchQuery} onChange={setSearchQuery} />
-              <FilterTabs activeFilter={activeFilter} onChange={setActiveFilter} />
-            </div>
           </div>
 
-          <div className="bg-white rounded-[24px] p-6 soft-shadow min-h-[400px]">
+          <div className="bg-white rounded-[32px] p-6 soft-shadow min-h-[400px] border border-slate-50">
             <TaskList 
-              tasks={filteredTasks}
-              loading={loading}
-              error={error}
-              onToggle={handleToggleComplete}
-              onEditTask={handleEditTask} 
-              onDeleteTask={handleDeleteClick} 
-            />
-          </div>
+            tasks={filteredTasks}
+            loading={loading}
+            error={error}
+            onToggle={handleToggleComplete}
+            onTogglePin={togglePin}
+            onEditTask={handleEditTask} 
+            onDeleteTask={handleDeleteClick} 
+            />          </div>
         </main>
 
         <TaskModal

@@ -1,20 +1,19 @@
 "use client";
 
 import { Task } from "@/types";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { Trash2, Calendar, Pin } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useTasks } from "@/hooks/useTasks";
 
 interface TaskCardProps {
   task: Task;
   onEdit: (task: Task) => void;
   onDelete: (id: number) => void;
+  onToggle: (id: number) => void;
+  onTogglePin: (id: number) => void;
 }
 
-export const TaskCard = ({ task, onEdit, onDelete }: TaskCardProps) => {
-  const { toggleComplete, togglePin } = useTasks();
+export const TaskCard = ({ task, onEdit, onDelete, onToggle, onTogglePin }: TaskCardProps) => {
   const isOverdue = task.due_date && new Date(task.due_date) < new Date(new Date().setHours(0, 0, 0, 0)) && !task.completed;
 
   const priorityColors = {
@@ -36,7 +35,10 @@ export const TaskCard = ({ task, onEdit, onDelete }: TaskCardProps) => {
       {/* Checkbox (Custom Circle Style) */}
       <div className="pl-2">
         <button
-          onClick={() => toggleComplete(task.id)}
+          onClick={(e) => {
+            e.stopPropagation();
+            onToggle(task.id);
+          }}
           data-testid="task-toggle"
           className={cn(
             "w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all",
@@ -91,7 +93,7 @@ export const TaskCard = ({ task, onEdit, onDelete }: TaskCardProps) => {
           size="icon"
           onClick={(e) => {
             e.stopPropagation();
-            togglePin(task.id);
+            onTogglePin(task.id);
           }}
           className={cn(
             "rounded-full transition-all",

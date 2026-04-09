@@ -59,3 +59,8 @@ body {
 *, *::before, *::after {
   transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out, color 0.2s ease-in-out;
 }
+
+
+@layer base { :root { --background-landing: #F8F9FB; } }
+.landing-bg { background-color: var(--background-landing); }
+.orange-gradient { background: linear-gradient(90deg, #FF6A00 0%, #FF8C42 100%); }

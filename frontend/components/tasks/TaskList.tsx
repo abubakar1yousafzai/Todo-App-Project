@@ -9,7 +9,8 @@ interface TaskListProps {
   tasks: Task[];
   loading: boolean;
   error: string | null;
-  onToggle: (id: number) => Promise<any>;
+  onToggle: (id: number) => void;
+  onTogglePin: (id: number) => void;
   onEditTask: (task: Task) => void;
   onDeleteTask: (id: number) => void;
 }
@@ -19,6 +20,7 @@ export const TaskList = ({
   loading, 
   error, 
   onToggle, 
+  onTogglePin,
   onEditTask, 
   onDeleteTask 
 }: TaskListProps) => {
@@ -61,6 +63,7 @@ export const TaskList = ({
           key={task.id}
           task={task}
           onToggle={onToggle}
+          onTogglePin={onTogglePin}
           onEdit={onEditTask}
           onDelete={onDeleteTask}
         />
