@@ -8,7 +8,7 @@ export function Testimonials() {
   return (
     <section className="max-w-7xl mx-auto px-6 py-20">
       <h2 className="text-4xl font-bold text-center mb-16">
-        Loved by <span className="orange-gradient text-transparent bg-clip-text">People Like You</span>
+        Loved by <span className="bg-gradient-to-r from-orange-500 to-orange-400 bg-clip-text text-transparent">People Like You</span>
       </h2>
       <div className="grid md:grid-cols-3 gap-8">
         {testimonials.map((t, i) => (

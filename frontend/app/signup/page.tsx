@@ -13,8 +13,8 @@ export default function SignupPage() {
             <CheckSquare className="h-10 w-10 text-white" />
           </div>
           <div>
-            <h1 className="text-4xl font-black text-slate-800 tracking-tight">My Tasks</h1>
-            <p className="text-slate-400 font-bold uppercase tracking-widest text-[10px] mt-2">Join the Community</p>
+            <h1 className="text-3xl font-black text-slate-800 tracking-tight">Create Account</h1>
+            <p className="text-slate-400 font-bold uppercase tracking-widest text-[10px] mt-2">Sign up to save your tasks</p>
           </div>
         </div>
 

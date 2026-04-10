@@ -9,7 +9,7 @@ export function HowItWorks() {
           { step: '03', title: 'Stay Focused', desc: 'Filter, search, and track your progress effortlessly.' }
         ].map((s, i) => (
           <div key={i} className="flex flex-col items-center">
-            <div className="w-16 h-16 bg-orange-100 text-orange-600 rounded-full flex items-center justify-center font-bold text-2xl mb-6">
+            <div className="w-16 h-16 flex items-center justify-center rounded-2xl bg-gradient-to-r from-orange-500 to-orange-400 text-white font-semibold shadow-md">
               {s.step}
             </div>
             <h3 className="text-xl font-bold mb-3">{s.title}</h3>
