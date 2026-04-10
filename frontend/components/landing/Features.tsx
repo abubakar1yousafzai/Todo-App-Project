@@ -13,8 +13,8 @@ export function Features() {
   return (
     <section id="features" className="max-w-7xl mx-auto px-6 py-20">
       <div className="text-center mb-16">
-        <span className="text-orange-600 font-bold tracking-wider uppercase text-sm">Features</span>
-        <h2 className="text-4xl font-bold mt-3">Everything You Need, <span className="orange-gradient text-transparent bg-clip-text">Nothing You Don't</span></h2>
+        <span className="inline-block px-4 py-1.5 rounded-full bg-orange-100 text-orange-600 font-bold tracking-wider uppercase text-sm">Features</span>
+        <h2 className="text-4xl font-bold mt-3">Everything You Need, <span className="bg-gradient-to-r from-orange-500 to-orange-400 bg-clip-text text-transparent">Nothing You Don't</span></h2>
       </div>
       <div className="grid md:grid-cols-3 gap-6">
         {features.map((f, i) => (

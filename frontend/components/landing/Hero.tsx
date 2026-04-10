@@ -5,9 +5,9 @@ export function Hero() {
         <span className="inline-block px-4 py-1.5 rounded-full bg-orange-100 text-orange-600 font-medium text-sm">
           Productivity, Simplified
         </span>
-        <h1 className="text-5xl md:text-6xl font-bold text-gray-900 leading-tight">
+        <h1 className="text-5xl md:text-6xl font-extrabold leading-tight text-gray-900">
           Organize Your Life,<br />
-          <span className="orange-gradient text-transparent bg-clip-text">One Task at a Time</span>
+          <span className="bg-gradient-to-r from-orange-500 to-orange-400 bg-clip-text text-transparent">One Task at a Time</span>
         </h1>
         <p className="text-lg text-gray-600">
           A beautifully crafted task manager with smart priorities, due dates, pinning, and instant undo. No clutter. Just focus.
