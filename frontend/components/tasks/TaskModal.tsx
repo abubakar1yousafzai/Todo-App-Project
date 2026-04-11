@@ -85,7 +85,7 @@ export const TaskModal = ({ isOpen, onClose, onSubmit, initialData }: TaskModalP
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="sm:max-w-[550px] p-0 overflow-hidden border-none rounded-[32px] bg-[#F7F7F8] soft-shadow">
+      <DialogContent className="sm:max-w-[550px] p-0 border-none rounded-[32px] bg-[#F7F7F8] soft-shadow">
         <DialogHeader className="p-8 bg-white">
           <DialogTitle className="text-2xl font-black text-slate-800 tracking-tight flex items-center gap-3">
             <div className="bg-primary/10 p-2 rounded-xl">

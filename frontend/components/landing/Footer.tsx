@@ -9,7 +9,7 @@ export function Footer() {
           <span className="font-bold text-lg text-gray-900">Taskly</span>
         </div>
         <div className="text-gray-500 text-sm">
-          © 2026 Taskly. Built with ❤️
+          © 2026 Taskly. Developed by Abu bakar for Hackathon II
         </div>
       </div>
     </footer>
