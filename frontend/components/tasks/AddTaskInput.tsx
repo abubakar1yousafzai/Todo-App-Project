@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Plus, Calendar } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -17,6 +17,7 @@ export function AddTaskInput({ onAdd }: AddTaskInputProps) {
   const [dueDate, setDueDate] = useState("");
   const [loading, setLoading] = useState(false);
   const [showOptions, setShowOptions] = useState(false);
+  const dateInputRef = useRef<HTMLInputElement>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -95,23 +96,26 @@ export function AddTaskInput({ onAdd }: AddTaskInputProps) {
 
               <div className="relative">
                 <input
+                  ref={dateInputRef}
                   type="date"
                   value={dueDate}
                   onChange={(e) => setDueDate(e.target.value)}
-                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
-                  id="task-date-input"
+                  className="sr-only"
+                  tabIndex={-1}
+                  aria-hidden="true"
                 />
-                <label 
-                  htmlFor="task-date-input" 
+                <button
+                  type="button"
+                  onClick={() => dateInputRef.current?.showPicker()}
                   className={`flex items-center gap-2 px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest cursor-pointer transition-all border ${
-                    dueDate 
-                      ? "bg-primary/10 text-primary border-primary/20" 
+                    dueDate
+                      ? "bg-primary/10 text-primary border-primary/20"
                       : "bg-slate-50 text-slate-400 border-slate-100 hover:bg-white hover:text-slate-600"
                   }`}
                 >
                   <Calendar size={14} />
                   {dueDate ? new Date(dueDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) : "Due date"}
-                </label>
+                </button>
               </div>
             </div>
             
