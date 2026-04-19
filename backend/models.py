@@ -45,3 +45,21 @@ class Task(SQLModel, table=True):
     )
     
     user: User = Relationship(back_populates="tasks")
+
+class Conversation(SQLModel, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True)
+    user_id: str = Field(foreign_key="user.id", index=True)
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    
+    messages: list["Message"] = Relationship(back_populates="conversation")
+
+class Message(SQLModel, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True)
+    conversation_id: int = Field(foreign_key="conversation.id", index=True)
+    user_id: str = Field(foreign_key="user.id", index=True)
+    role: str = Field(max_length=50, nullable=False) # user or assistant
+    content: str = Field(nullable=False)
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    
+    conversation: Conversation = Relationship(back_populates="messages")
