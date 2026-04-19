@@ -6,7 +6,7 @@ from sqlalchemy.exc import SQLAlchemyError
 import os
 from dotenv import load_dotenv
 from db import create_db_and_tables
-from routes import tasks
+from routes import tasks, chat
 
 # Load environment variables
 load_dotenv()
@@ -24,6 +24,7 @@ app.add_middleware(
 
 # Register routes
 app.include_router(tasks.router)
+app.include_router(chat.router)
 
 @app.on_event("startup")
 def on_startup():
