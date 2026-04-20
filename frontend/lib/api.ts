@@ -1,7 +1,18 @@
 import { Task, TaskFormData, ApiResponse } from "@/types";
+import { ChatRequest, ChatResponse } from "@/types/chat";
 import { getToken } from "./auth";
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api";
+
+export const sendChatMessage = async (
+  userId: string,
+  data: ChatRequest
+): Promise<ApiResponse<ChatResponse>> => {
+  return request<ChatResponse>(`/${userId}/chat`, {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+};
 
 /**
  * Centralized fetch wrapper that automatically attaches the Better Auth
