@@ -11,6 +11,8 @@ dependencies = [
     "python-jose[cryptography]>=3.5.0",
     "sqlmodel>=0.0.37",
     "uvicorn>=0.41.0",
+    "openai-agents>=0.6.4",
+    "openai>=1.0.0",
 ]
 
 [dependency-groups]

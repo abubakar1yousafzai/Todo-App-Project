@@ -1,14 +1,15 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session, select
-from backend.db import get_session
-from backend.models import Conversation, Message
-from backend.agents.todo_agent import agent
-from pydantic import BaseModel
+from agents import Runner
+from db import get_session
+from models import Conversation, Message
+from chatbot.todo_agent import agent
+from pydantic import BaseModel, Field
 
 router = APIRouter()
 
 class ChatRequest(BaseModel):
-    content: str
+    content: str = Field(..., min_length=1, max_length=5000)
 
 class ChatResponse(BaseModel):
     response: str
@@ -22,17 +23,26 @@ async def chat(user_id: str, request: ChatRequest, session: Session = Depends(ge
         session.add(conv)
         session.commit()
         session.refresh(conv)
-    
+
     # 2. Store user message
-    user_msg = Message(conversation_id=conv.id, user_id=user_id, role="user", content=request.content)
+    user_msg = Message(conversation_id=conv.id, user_id=user_id, role="user", content=request.content.strip())
     session.add(user_msg)
-    
-    # 3. Get AI response (Placeholder for actual Agent SDK interaction)
-    ai_response = "I have processed your request."
-    
+    session.commit()
+
+    # 3. Run agent with user_id in context for data isolation
+    try:
+        result = await Runner.run(
+            agent,
+            input=request.content.strip(),
+            context={"user_id": user_id},
+        )
+        ai_response = result.final_output or "I could not process your request."
+    except Exception as e:
+        ai_response = f"Sorry, something went wrong: {str(e)}"
+
     # 4. Store assistant response
     ai_msg = Message(conversation_id=conv.id, user_id=user_id, role="assistant", content=ai_response)
     session.add(ai_msg)
     session.commit()
-    
+
     return ChatResponse(response=ai_response)

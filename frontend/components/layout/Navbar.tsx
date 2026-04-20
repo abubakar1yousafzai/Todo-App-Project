@@ -3,7 +3,8 @@
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { useTasks } from "@/hooks/useTasks";
-import { LogOut, CheckSquare } from "lucide-react";
+import { LogOut, CheckSquare, MessageSquare } from "lucide-react";
+import Link from "next/link";
 
 export const Navbar = () => {
   const { user, logout } = useAuth();
@@ -23,6 +24,10 @@ export const Navbar = () => {
         </div>
 
         <div className="flex items-center gap-2 md:gap-6">
+          <Link href="/chat" className="text-slate-600 hover:text-primary transition-colors flex items-center gap-1 font-semibold">
+            <MessageSquare className="h-5 w-5" />
+            <span className="hidden sm:inline">Chat</span>
+          </Link>
           {user && (
             <div className="hidden sm:flex flex-col items-end text-right">
               <span className="text-sm font-semibold text-slate-700 leading-none">{user.name || 'User'}</span>
