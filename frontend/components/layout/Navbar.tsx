@@ -18,16 +18,12 @@ export const Navbar = () => {
             <CheckSquare className="h-6 w-6 text-white" />
           </div>
           <div className="flex flex-col">
-            <span className="text-xl font-bold text-slate-800 tracking-tight leading-none">My Tasks</span>
+            <span className="text-xl font-bold text-slate-800 tracking-tight leading-none">Taskly</span>
             <span className="text-xs font-medium text-slate-400 mt-1">{tasks.length} total tasks</span>
           </div>
         </div>
 
         <div className="flex items-center gap-2 md:gap-6">
-          <Link href="/chat" className="text-slate-600 hover:text-primary transition-colors flex items-center gap-1 font-semibold">
-            <MessageSquare className="h-5 w-5" />
-            <span className="hidden sm:inline">Chat</span>
-          </Link>
           {user && (
             <div className="hidden sm:flex flex-col items-end text-right">
               <span className="text-sm font-semibold text-slate-700 leading-none">{user.name || 'User'}</span>
