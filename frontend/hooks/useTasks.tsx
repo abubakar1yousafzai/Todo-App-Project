@@ -53,15 +53,15 @@ export const useTasks = () => {
 
   useEffect(() => {
     fetchTasks();
-  }, [fetchTasks]);
-
-  useEffect(() => {
+    const handleRefresh = () => fetchTasks();
+    window.addEventListener('refresh-tasks', handleRefresh);
     return () => {
+      window.removeEventListener('refresh-tasks', handleRefresh);
       if (deleteTimeoutRef.current) {
         clearTimeout(deleteTimeoutRef.current);
       }
     };
-  }, []);
+  }, [fetchTasks]);
 
   const filteredTasks = useMemo(() => {
     return tasks
